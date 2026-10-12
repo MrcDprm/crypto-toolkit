@@ -11,4 +11,7 @@ public class ToolsController : Controller
 
     [HttpGet("rsa"), HttpHead("rsa")]
     public IActionResult Rsa() => View();
+
+    [HttpGet("sign"), HttpHead("sign")]
+    public IActionResult Sign() => View();
 }
