@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/CryptoToolkit.Web/CryptoToolkit.Web.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CryptoToolkit.Tests/CryptoToolkit.Tests.csproj" />
+  </Folder>
 </Solution>

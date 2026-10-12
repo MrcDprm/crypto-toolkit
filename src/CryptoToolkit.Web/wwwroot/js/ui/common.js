@@ -4,7 +4,7 @@ import { CryptoError } from "../crypto/encoding.js";
 
 const texts = JSON.parse(document.getElementById("texts")?.textContent || "{}");
 
-// t("err.decrypt") or t("file.size", "12 KB"): "{0}" style placeholders.
+// t("err.decrypt") or t("info.sizeValue", "1 KB", "2 KB"): "{0}" style placeholders.
 export function t(key, ...args) {
   const text = texts[key] ?? key;
   return text.replace(/\{(\d)\}/g, (_, i) => args[i] ?? "");
