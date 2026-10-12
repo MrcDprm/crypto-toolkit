@@ -1,13 +1,14 @@
-namespace CryptoToolkit.Web.Infrastructure;
+namespace CryptoToolkit.Web.Models;
 
-// The tool pages, in menu order. The header menu and the home page cards are
-// both drawn from this list; Key is the prefix of the tool's texts in the
-// language files ("tool.encrypt.name") and Icon is an SVG path (24×24 grid).
+// A tool page. Key is the prefix of the tool's texts in the language files
+// ("tool.encrypt.name") and Icon is an SVG path on a 24×24 grid.
 public record Tool(string Slug, string Key, string Algorithms, string Icon)
 {
     public string Url => "/" + Slug;
 }
 
+// The tool pages, in menu order. The header menu and the home page cards are
+// both drawn from this list.
 public static class Tools
 {
     public static readonly Tool[] All =

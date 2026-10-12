@@ -1,3 +1,4 @@
+using CryptoToolkit.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CryptoToolkit.Web.Controllers;
@@ -8,9 +9,6 @@ namespace CryptoToolkit.Web.Controllers;
 public class ErrorController : Controller
 {
     [Route("Error/{code:int?}")]
-    public IActionResult Index(int? code)
-    {
-        ViewBag.Code = code ?? 500;
-        return View("~/Views/Shared/Error.cshtml");
-    }
+    public IActionResult Index(int? code) =>
+        View("~/Views/Shared/Error.cshtml", new ErrorViewModel(code ?? 500));
 }

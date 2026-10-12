@@ -1,4 +1,4 @@
-using CryptoToolkit.Web.Infrastructure;
+using CryptoToolkit.Web.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
