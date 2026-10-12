@@ -1,60 +1,48 @@
-# Kriptografi Projesi
+English | [Türkçe](README.tr.md)
 
-Bu proje, ASP.NET Core MVC teknolojisi kullanılarak geliştirilmiş, temel kriptografi işlemlerini (RSA & SHA256) uygulamalı olarak gerçekleştiren bir bitirme/final projesidir.
+# Crypto Toolkit
 
-## 🎯 Proje Amacı
-Kullanıcı dostu bir arayüz üzerinden:
-- RSA Anahtar Üretimi
-- RSA ile Metin Şifreleme
-- RSA ile Şifreli Metni Çözme
-- SHA256 Hashleme
-gibi temel şifreleme işlemlerini gerçekleştirmeyi amaçlar.
+A browser-based cryptography toolkit: encrypt text and files with a password, generate RSA keys, sign and verify data, and compute hashes. Every operation runs in your browser with the Web Crypto API, so your text, files and private keys never leave your device.
 
-## 🧰 Kullanılan Teknolojiler
-- ASP.NET Core MVC (.NET 6+)
-- C#
-- Bootstrap 5
-- RSA & SHA256 (System.Security.Cryptography)
-- Visual Studio / Rider IDE
+> **Status:** being rewritten. This README is a draft and will be completed when v1.0 is released.
 
-## ⚙️ Özellikler
-- ✅ RSA Public & Private Key üretme
-- ✅ Metin tabanlı RSA şifreleme ve çözme
-- ✅ SHA256 ile tek yönlü özetleme
-- ✅ Kullanımı kolay sade ve modern bir arayüz
-- ✅ Tüm işlemlerde Base64 destekli veri çıktısı
+Originally my final project for the *Information Security and Cryptography* course (Computer Engineering, 3rd year, May 2025). The first version did the cryptography on the server with a hard-coded AES key and IV; this rewrite moves it into the browser and uses modern, authenticated algorithms.
 
-## 🚀 Kurulum ve Çalıştırma
-1. Projeyi klonlayın
-2. Visual Studio veya Rider IDE ile açın
-3. Gerekli NuGet paketlerinin yüklendiğinden emin olun
-4. Projeyi derleyin ve çalıştırın
+## Features
 
-## 📝 Kullanım
-Proje her işlemi tek bir sayfada gerçekleştiriyor ve bu anasayfanın görüntüsüdür.
+Planned for v1.0:
 
-![Ekran görüntüsü 2025-05-24 174458](https://github.com/user-attachments/assets/24dcdb25-cb2b-464d-b846-de2935e71dbd)
+- **Password encryption (text and files):** AES-256-GCM with a key derived from your password by PBKDF2-SHA256 (600,000 iterations). Output is a single versioned Base64 package (salt + IV + ciphertext).
+- **RSA and hybrid encryption:** generate RSA-OAEP key pairs (PEM export), encrypt with a public key; large data is encrypted with AES-GCM and only the AES key is wrapped with RSA.
+- **Digital signatures:** sign and verify text or files with ECDSA P-256.
+- **Hashing:** SHA-256 / SHA-512 and HMAC for text and files.
+- **"How it works" panel** on every tool explaining what happens step by step.
+- Turkish / English interface, light and dark theme.
+- Strict security headers (CSP without inline scripts), rate limiting, friendly error pages.
 
-AES Şifreleme işlemi için belirli alana metni giriyoruz ve şifrele butonuna tıklıyoruz. Şifrelenmiş metin karşımıza çıkıyor.
+## Screenshots
 
-![Ekran görüntüsü 2025-05-24 174913](https://github.com/user-attachments/assets/e2d2af52-ec96-490a-b533-278795537ebe)
+_Coming with v1.0._
 
-Şifrelenmiş metni çözüp yazılı olan metni görmek için şifreyi çöz butonuna tıklıyoruz ve çözülmüş metin karşımıza çıkıyor.
+## Tech Stack
 
-![Ekran görüntüsü 2025-05-24 174920](https://github.com/user-attachments/assets/7610045c-4e4a-4a44-bfcf-1c352e26d6e4)
+- ASP.NET Core MVC (C#) as the page shell, served from Docker on Render
+- Web Crypto API (`crypto.subtle`) in plain JavaScript modules
+- `node --test` for the cryptography modules, xUnit for the server
 
-SHA256  Dosya özeti alma ve metin özeti alma kısmında ise yüklediğimiz dosyanın dosya özetini alabiliyoruz.
+## Installation
 
-![Ekran görüntüsü 2025-05-24 174649](https://github.com/user-attachments/assets/6c6f74d8-ee17-4b17-a8d1-bcf0d92b0a23)
+_Coming with v1.0._
 
-Girilmiş olan metnin özetini de metin özeti al butonuna tıklayarak alabiliyoruz.
+## What I Learned
 
-![Ekran görüntüsü 2025-05-24 174657](https://github.com/user-attachments/assets/2e41f8c4-3996-4d82-a4fc-e85a16473cfa)
+_Coming with v1.0._
 
-RSA Şifreleme işleminde ise öncelikle anahtar çifti oluşturuyoruz(Public-Private Key).
-Eğer oluşturmadan şifrelemeye çalışırsak bize uyarı veriyor.(Önce anahtar çifti oluşturulmalı diye)
-Anahtar çiftini oluşturduktan sonra istenilen metni giriyoruz ve şifreliyoruz.
-Sonra bu metnin şifrelenmiş halini çözmek için şifre çöz butonuna basıyoruz ve çözülmüş metin karşımıza çıkıyor.
+## Future Plans
 
-![Ekran görüntüsü 2025-05-24 174617](https://github.com/user-attachments/assets/6ae2dcde-7124-40a4-9766-ad92fd2825ca)
+- Password generator and strength meter
+- Ed25519 signatures and X25519 key exchange
 
+## License
+
+[MIT](LICENSE)
