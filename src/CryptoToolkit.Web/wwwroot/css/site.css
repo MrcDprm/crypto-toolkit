@@ -463,15 +463,17 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 
 /* Footer */
 .site-footer { border-top: 1px solid var(--line); background: var(--bg-2); }
-.site-footer__inner { display: grid; gap: 14px; justify-items: start; padding-block: 28px 32px; }
-.site-footer__inner > .muted { max-width: 720px; margin: 0; }
-.footer-projects { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .9rem; }
-.footer-projects a { color: var(--text-2); text-decoration: none; }
-.footer-projects a:hover { color: var(--text); text-decoration: underline; }
-.footer-projects a[aria-current="page"] { color: var(--accent); font-weight: 600; }
-.footer-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .85rem; color: var(--text-3); }
-.footer-meta a { color: var(--text-3); }
-.footer-meta a:hover { color: var(--text); }
+/* Same look as the footers of the other live projects: centred mono rows,
+   the current project shown as plain bold text. */
+.site-footer__inner {
+  display: grid; gap: 12px; justify-items: center; text-align: center; padding-block: 28px 32px;
+  font: .8rem/1.5 var(--font-mono); color: var(--text-3);
+}
+.site-footer__inner > .muted { max-width: 720px; margin: 0 0 6px; font-family: var(--font-body); }
+.footer-projects, .footer-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; }
+.footer-projects a, .footer-meta a { color: var(--text-2); text-decoration: none; }
+.footer-projects a:hover, .footer-meta a:hover { color: var(--accent); text-decoration: underline; }
+.footer-projects [aria-current="page"] { color: var(--text); font-weight: 600; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
