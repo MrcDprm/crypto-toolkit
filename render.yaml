@@ -1,0 +1,15 @@
+# Render Blueprint: creates the web service from the Dockerfile.
+# The app has no database and no secrets: all cryptography runs in the
+# visitor's browser, so the only setting is the list of allowed host names.
+services:
+  - type: web
+    name: crypto-toolkit
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: AllowedHosts
+        value: "crypto.miracdeprem.com;crypto-toolkit.onrender.com"
