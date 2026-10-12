@@ -1,0 +1,36 @@
+@model Tool[]
+@{
+    ViewData["Title"] = null;
+}
+<section class="hero">
+    <p class="eyebrow">@T["home.eyebrow"]</p>
+    <h1 class="hero__title">@T["home.title"]</h1>
+    <p class="hero__lead">@T["home.lead"]</p>
+    <p class="badge"><span class="badge__dot" aria-hidden="true"></span>@T["badge.local"]</p>
+</section>
+
+<section class="tool-grid" aria-label="@T["nav.main"]">
+    @foreach (var tool in Model)
+    {
+        <a class="tool-card" href="@tool.Url">
+            <svg class="tool-card__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="@tool.Icon" /></svg>
+            <h2 class="tool-card__name">@T[$"tool.{tool.Key}.name"]</h2>
+            <p class="tool-card__summary">@T[$"tool.{tool.Key}.summary"]</p>
+            <p class="tool-card__algo">@tool.Algorithms</p>
+            <span class="tool-card__open">@T["home.open"] <span aria-hidden="true">→</span></span>
+        </a>
+    }
+</section>
+
+<section class="why">
+    <h2>@T["home.why.title"]</h2>
+    <div class="why__grid">
+        @foreach (var item in new[] { "local", "std", "open" })
+        {
+            <div class="why__item">
+                <h3>@T[$"home.why.{item}.title"]</h3>
+                <p>@T[$"home.why.{item}.text"]</p>
+            </div>
+        }
+    </div>
+</section>
