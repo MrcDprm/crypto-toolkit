@@ -14,4 +14,7 @@ public class ToolsController : Controller
 
     [HttpGet("sign"), HttpHead("sign")]
     public IActionResult Sign() => View();
+
+    [HttpGet("hash"), HttpHead("hash")]
+    public IActionResult Hash() => View();
 }

@@ -1,0 +1,134 @@
+@{
+    ViewData["Title"] = T["tool.hash.name"];
+}
+@section Head {
+    <script type="module" src="~/js/ui/hash.js" asp-append-version="true"></script>
+}
+
+<header class="tool-head">
+    <p class="eyebrow">SHA-256 · SHA-512 · HMAC</p>
+    <h1>@T["tool.hash.name"]</h1>
+    <p class="tool-head__lead">@T["hash.lead"]</p>
+</header>
+
+<form class="bench" id="hash-form" novalidate autocomplete="off" data-mode="hash" data-source="text">
+    <div class="bench__controls">
+        <fieldset class="segmented">
+            <legend class="sr-only">@T["form.mode"]</legend>
+            <label><input type="radio" name="mode" value="hash" checked /><span>@T["hash.mode.hash"]</span></label>
+            <label><input type="radio" name="mode" value="hmac" /><span>HMAC</span></label>
+        </fieldset>
+        <fieldset class="segmented">
+            <legend class="sr-only">@T["form.source"]</legend>
+            <label><input type="radio" name="source" value="text" checked /><span>@T["form.text"]</span></label>
+            <label><input type="radio" name="source" value="file" /><span>@T["form.file"]</span></label>
+        </fieldset>
+    </div>
+
+    <div class="bench__grid">
+        <section class="pane" aria-labelledby="input-title">
+            <h2 class="pane__title" id="input-title">@T["form.input"]</h2>
+
+            <div class="field" data-show-source="text">
+                <label for="text-input">@T["hash.textLabel"]</label>
+                <textarea id="text-input" class="mono-area" rows="5" spellcheck="false" maxlength="2000000"></textarea>
+            </div>
+
+            <div class="field" data-show-source="file">
+                <span class="field__label">@T["form.file"]</span>
+                <label class="dropzone" id="dropzone">
+                    <input type="file" class="sr-only" />
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>
+                    <span class="dropzone__text">@T["file.choose"]</span>
+                    <span class="dropzone__name" data-file-name></span>
+                    <span class="dropzone__hint">@T["file.limit"]</span>
+                </label>
+            </div>
+
+            <div class="field" data-show-mode="hmac">
+                <label for="hmac-key">@T["hash.keyLabel"]</label>
+                <div class="input-row">
+                    <input id="hmac-key" type="password" autocomplete="off" spellcheck="false" />
+                    <button type="button" class="icon-btn" data-reveal="#hmac-key" aria-pressed="false" aria-label="@T["form.show"]">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="field" data-show-mode="hmac">
+                <label for="hmac-algorithm">@T["info.algorithm"]</label>
+                <select id="hmac-algorithm">
+                    <option value="SHA-256" selected>HMAC-SHA-256</option>
+                    <option value="SHA-512">HMAC-SHA-512</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="expected">@T["hash.expectedLabel"]</label>
+                <input id="expected" type="text" class="mono-input" spellcheck="false" placeholder="@T["hash.expectedPlaceholder"]" />
+                <p class="hint" data-show-mode="hash">@T["hash.expectedHint"]</p>
+            </div>
+
+            <button type="submit" class="btn btn--block" id="run"></button>
+            <p class="status" id="status" role="status" hidden></p>
+        </section>
+
+        <section class="pane pane--output" aria-labelledby="output-title">
+            <h2 class="pane__title" id="output-title">@T["form.output"]</h2>
+
+            <div class="output-empty" id="output-empty">@T["form.outputEmpty"]</div>
+
+            <div id="output" hidden>
+                <div class="verdict" id="verdict" data-valid="false" hidden>
+                    <svg class="verdict__icon verdict__icon--ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
+                    <svg class="verdict__icon verdict__icon--bad" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                    <div>
+                        <p class="verdict__title" id="verdict-title"></p>
+                        <p class="verdict__text" id="verdict-text"></p>
+                    </div>
+                </div>
+
+                <div class="field" data-show-mode="hash">
+                    <label for="sha256-output">SHA-256</label>
+                    <div class="input-row">
+                        <textarea id="sha256-output" class="mono-area digest-area" rows="2" readonly spellcheck="false"></textarea>
+                        <button type="button" class="btn btn--ghost btn--small" data-copy="#sha256-output">@T["form.copy"]</button>
+                    </div>
+                </div>
+                <div class="field" data-show-mode="hash">
+                    <label for="sha512-output">SHA-512</label>
+                    <div class="input-row">
+                        <textarea id="sha512-output" class="mono-area digest-area" rows="3" readonly spellcheck="false"></textarea>
+                        <button type="button" class="btn btn--ghost btn--small" data-copy="#sha512-output">@T["form.copy"]</button>
+                    </div>
+                </div>
+                <div class="field" data-show-mode="hmac">
+                    <label for="hmac-output" id="hmac-output-label">HMAC</label>
+                    <div class="input-row">
+                        <textarea id="hmac-output" class="mono-area digest-area" rows="3" readonly spellcheck="false"></textarea>
+                        <button type="button" class="btn btn--ghost btn--small" data-copy="#hmac-output">@T["form.copy"]</button>
+                    </div>
+                </div>
+
+                <dl class="package-info">
+                    <div><dt>@T["info.size"]</dt><dd id="info-size"></dd></div>
+                    <div><dt>@T["hash.info.time"]</dt><dd id="info-time"></dd></div>
+                </dl>
+            </div>
+        </section>
+    </div>
+</form>
+
+<details class="how">
+    <summary>@T["how.title"]</summary>
+    <div class="how__body">
+        <ol class="how__steps">
+            <li>@T["hash.how.1"]</li>
+            <li>@T["hash.how.2"]</li>
+            <li>@T["hash.how.3"]</li>
+            <li>@T["hash.how.4"]</li>
+        </ol>
+        <p class="note">@T["hash.how.warning"]</p>
+    </div>
+</details>
+
+<partial name="_ScriptText" />

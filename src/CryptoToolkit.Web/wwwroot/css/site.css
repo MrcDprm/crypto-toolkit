@@ -259,6 +259,8 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 [data-mode="decrypt"] [data-show-mode="encrypt"],
 [data-mode="sign"] [data-show-mode="verify"],
 [data-mode="verify"] [data-show-mode="sign"],
+[data-mode="hash"] [data-show-mode="hmac"],
+[data-mode="hmac"] [data-show-mode="hash"],
 [data-source="text"] [data-show-source="file"],
 [data-source="file"] [data-show-source="text"] { display: none !important; }
 
@@ -308,6 +310,13 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 .input-row { display: flex; gap: 8px; }
 .input-row input { flex: 1; min-width: 0; }
 .input-row .icon-btn { width: 42px; height: 42px; }
+.input-row .btn--small { align-self: flex-start; }
+/* Digests grow to fit (where supported) so no hex digit is ever hidden. */
+.digest-area { resize: none; color: var(--accent); field-sizing: content; min-height: 0; }
+@media (max-width: 480px) {
+  .input-row:has(.digest-area) { flex-direction: column; }
+}
+.field input.mono-input { font-family: var(--font-mono); font-size: .85rem; }
 .icon-btn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
 
 .dropzone {
