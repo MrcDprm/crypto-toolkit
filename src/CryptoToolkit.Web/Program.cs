@@ -4,6 +4,7 @@ using System.Text.Unicode;
 using System.Threading.RateLimiting;
 using CryptoToolkit.Web.Infrastructure;
 using CryptoToolkit.Web.Localization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Localization;
@@ -34,12 +35,16 @@ builder.Services.Configure<WebEncoderOptions>(options =>
 builder.Services.AddControllersWithViews();
 
 // One limit per IP for every request; enough for normal use, stops floods.
+// Not limited: the health check (Render would mark the service down) and the
+// error page re-executed for a rejected request, which would otherwise be
+// rejected too and leave the user with an empty 429 page.
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         context.Request.Path.StartsWithSegments("/healthz")
-            ? RateLimitPartition.GetNoLimiter("health")
+        || context.Features.Get<IStatusCodeReExecuteFeature>() != null
+            ? RateLimitPartition.GetNoLimiter("exempt")
             : RateLimitPartition.GetFixedWindowLimiter(
                 context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                 _ => new FixedWindowRateLimiterOptions { PermitLimit = 300, Window = TimeSpan.FromMinutes(1) }));
