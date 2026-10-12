@@ -1,0 +1,11 @@
+@using System.Text.Json
+@{
+    // Texts used by the page scripts ("js.*" keys) in the current language.
+    // A JSON data block is never executed, so the CSP still allows no inline
+    // script; System.Text.Json escapes <, > and & so the content cannot close
+    // the tag early.
+    var texts = T.GetAllStrings(false)
+        .Where(s => s.Name.StartsWith("js.", StringComparison.Ordinal))
+        .ToDictionary(s => s.Name[3..], s => s.Value);
+}
+<script type="application/json" id="texts">@Html.Raw(JsonSerializer.Serialize(texts))</script>
