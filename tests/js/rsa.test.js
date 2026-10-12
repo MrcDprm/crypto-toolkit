@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { fromBase64, toBase64, utf8 } from "../../src/CryptoToolkit.Web/wwwroot/js/crypto/encoding.js";
 import {
   decryptBytes, decryptText, encryptBytes, encryptText, exportPrivatePem, exportPublicPem,
-  fingerprint, generateKeyPair, importPrivatePem, importPublicPem,
+  fingerprint, generateKeyPair, importPrivatePem, importPublicPem, inspect,
 } from "../../src/CryptoToolkit.Web/wwwroot/js/crypto/rsa.js";
 import * as sign from "../../src/CryptoToolkit.Web/wwwroot/js/crypto/sign.js";
 
@@ -31,6 +31,15 @@ test("keys survive a PEM export and import", async () => {
   const pkg = await encryptText("pem ile", pub);
   assert.equal(await decryptText(pkg, priv), "pem ile");
   assert.equal(await fingerprint(pub), await fingerprint(alice.publicKey));
+});
+
+test("inspect reads the parts of a package without a key", async () => {
+  const pkg = await encryptBytes(utf8("12345"), alice.publicKey);
+  const info = inspect(pkg);
+  assert.equal(info.version, 1);
+  assert.equal(info.wrappedKey.length, 256); // a 2048-bit RSA block
+  assert.equal(info.iv.length, 12);
+  assert.equal(info.size, 5);
 });
 
 test("each package is different even for the same text", async () => {

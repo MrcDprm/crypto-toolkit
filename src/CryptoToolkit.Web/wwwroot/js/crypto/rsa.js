@@ -68,7 +68,9 @@ export async function encryptBytes(plain, publicKey) {
   return concat(header, new Uint8Array(sealed));
 }
 
-export async function decryptBytes(pkg, privateKey) {
+// Splits a package into its parts without a key; the page shows these
+// details, and input that is not a package is rejected early.
+export function inspect(pkg) {
   if (pkg.length < MAGIC.length + 3 || !MAGIC.every((b, i) => pkg[i] === b)) {
     throw new CryptoError("format");
   }
@@ -77,18 +79,29 @@ export async function decryptBytes(pkg, privateKey) {
   const ivStart = 6 + wrappedLength;
   const headerEnd = ivStart + IV_BYTES;
   if (pkg.length < headerEnd + TAG_BYTES) throw new CryptoError("format");
+  return {
+    version: pkg[3],
+    wrappedKey: pkg.subarray(6, ivStart),
+    iv: pkg.subarray(ivStart, headerEnd),
+    headerEnd,
+    size: pkg.length - headerEnd - TAG_BYTES,
+  };
+}
+
+export async function decryptBytes(pkg, privateKey) {
+  const { wrappedKey, iv, headerEnd } = inspect(pkg);
 
   let aesKey;
   try {
     aesKey = await crypto.subtle.unwrapKey(
-      "raw", pkg.subarray(6, ivStart), privateKey, RSA, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+      "raw", wrappedKey, privateKey, RSA, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
   } catch {
     // The package was made for another public key (or the key part was changed).
     throw new CryptoError("wrongKey");
   }
   try {
     const plain = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv: pkg.subarray(ivStart, headerEnd), additionalData: pkg.subarray(0, headerEnd), tagLength: TAG_BYTES * 8 },
+      { name: "AES-GCM", iv, additionalData: pkg.subarray(0, headerEnd), tagLength: TAG_BYTES * 8 },
       aesKey, pkg.subarray(headerEnd));
     return new Uint8Array(plain);
   } catch {
