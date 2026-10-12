@@ -77,8 +77,9 @@ $("#signature-file").addEventListener("change", async (e) => {
   }
   try {
     signatureInput.value = fromUtf8(new Uint8Array(await file.arrayBuffer())).trim();
-  } catch (err) {
-    setStatus(status, "error", errorText(err));
+  } catch {
+    // Not a text file, so it cannot be a Base64 signature.
+    setStatus(status, "error", t("err.signature"));
   }
 });
 
