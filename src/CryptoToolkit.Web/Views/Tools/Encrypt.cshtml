@@ -31,8 +31,8 @@
 
             <div class="field" data-show-source="text">
                 <label for="text-input">
-                    <span data-show-mode="encrypt">@T["encrypt.textLabel"]</span>
-                    <span data-show-mode="decrypt">@T["encrypt.packageLabel"]</span>
+                    <span data-show-mode="encrypt">@T["form.textLabel"]</span>
+                    <span data-show-mode="decrypt">@T["form.packageLabel"]</span>
                 </label>
                 <textarea id="text-input" class="mono-area" rows="7" spellcheck="false" maxlength="2000000"></textarea>
             </div>
@@ -79,13 +79,13 @@
             <div id="output" hidden>
                 <div class="field" data-show-source="text">
                     <label for="text-output">
-                        <span data-show-mode="encrypt">@T["encrypt.packageLabel"]</span>
-                        <span data-show-mode="decrypt">@T["encrypt.plainLabel"]</span>
+                        <span data-show-mode="encrypt">@T["form.packageLabel"]</span>
+                        <span data-show-mode="decrypt">@T["form.plainLabel"]</span>
                     </label>
                     <textarea id="text-output" class="mono-area" rows="7" readonly spellcheck="false"></textarea>
                     <div class="actions">
                         <button type="button" class="btn btn--ghost" data-copy="#text-output">@T["form.copy"]</button>
-                        <button type="button" class="btn btn--ghost" id="try-decrypt" data-show-mode="encrypt">@T["encrypt.tryDecrypt"]</button>
+                        <button type="button" class="btn btn--ghost" id="try-decrypt" data-show-mode="encrypt">@T["form.tryDecrypt"]</button>
                     </div>
                 </div>
 

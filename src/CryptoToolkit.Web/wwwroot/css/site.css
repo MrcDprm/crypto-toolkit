@@ -301,6 +301,8 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 }
 .mono-area { font-family: var(--font-mono); font-size: .85rem; line-height: 1.5; resize: vertical; word-break: break-all; }
 .mono-area[readonly] { background: var(--panel); }
+/* PEM keys keep their 64-character lines; narrow screens scroll sideways. */
+.pem-area { font-size: .74rem; white-space: pre; word-break: normal; overflow-x: auto; }
 .input-row { display: flex; gap: 8px; }
 .input-row input { flex: 1; min-width: 0; }
 .input-row .icon-btn { width: 42px; height: 42px; }
@@ -359,6 +361,27 @@ code, kbd, samp { font-family: var(--font-mono); font-size: .9em; }
 .package-info div + div { border-top: 1px solid var(--line); }
 .package-info dt { color: var(--text-3); }
 .package-info dd { margin: 0; font-family: var(--font-mono); word-break: break-all; }
+
+.hint { margin: 0; font-size: .8rem; color: var(--text-3); }
+.step {
+  display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; margin-right: 6px;
+  border-radius: 50%; background: var(--accent); color: var(--accent-ink); letter-spacing: 0;
+}
+.bench__title {
+  font-family: var(--font-mono); font-size: .78rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); margin: 0 0 12px;
+}
+
+/* Key pair generator */
+.keygen { margin-bottom: 28px; }
+.keygen__row { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.keygen__row .field { margin: 0; min-width: 180px; }
+.keygen .status { margin-bottom: 0; }
+#keys { margin-top: 20px; }
+.keys__grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 860px) { .keys__grid { grid-template-columns: minmax(0, 1fr); } }
+.fingerprint { font-size: .875rem; color: var(--text-2); margin-bottom: 14px; }
+.fingerprint code { color: var(--accent); word-break: break-all; }
 
 /* "How it works" */
 .how { margin-top: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }

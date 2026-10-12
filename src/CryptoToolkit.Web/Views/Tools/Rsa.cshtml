@@ -1,0 +1,169 @@
+@{
+    ViewData["Title"] = T["tool.rsa.name"];
+}
+@section Head {
+    <script type="module" src="~/js/ui/rsa.js" asp-append-version="true"></script>
+}
+
+<header class="tool-head">
+    <p class="eyebrow">RSA-OAEP · SHA-256 · AES-256-GCM</p>
+    <h1>@T["tool.rsa.name"]</h1>
+    <p class="tool-head__lead">@T["rsa.lead"]</p>
+</header>
+
+<form class="pane keygen" id="keygen-form" novalidate>
+    <h2 class="pane__title"><span class="step">1</span> @T["rsa.keys.title"]</h2>
+    <div class="keygen__row">
+        <div class="field">
+            <label for="key-size">@T["rsa.keys.size"]</label>
+            <select id="key-size">
+                <option value="2048">2048 bit</option>
+                <option value="3072" selected>3072 bit</option>
+                <option value="4096">4096 bit</option>
+            </select>
+        </div>
+        <button type="submit" class="btn" id="generate">@T["rsa.keys.generate"]</button>
+    </div>
+    <p class="status" id="keygen-status" role="status" hidden></p>
+
+    <div id="keys" hidden>
+        <p class="fingerprint">@T["info.fingerprint"]: <code id="key-fingerprint"></code></p>
+        <div class="keys__grid">
+            <div class="field">
+                <label for="public-pem">@T["rsa.keys.public"]</label>
+                <textarea id="public-pem" class="mono-area pem-area" wrap="off" rows="8" readonly spellcheck="false"></textarea>
+                <div class="actions">
+                    <button type="button" class="btn btn--ghost" data-copy="#public-pem">@T["form.copy"]</button>
+                    <a class="btn btn--ghost" id="download-public" href="#" download>public.pem</a>
+                </div>
+            </div>
+            <div class="field">
+                <label for="private-pem">@T["rsa.keys.private"]</label>
+                <textarea id="private-pem" class="mono-area pem-area" wrap="off" rows="8" readonly spellcheck="false"></textarea>
+                <div class="actions">
+                    <button type="button" class="btn btn--ghost" data-copy="#private-pem">@T["form.copy"]</button>
+                    <a class="btn btn--ghost" id="download-private" href="#" download>private.pem</a>
+                </div>
+            </div>
+        </div>
+        <p class="note">@T["rsa.keys.warning"]</p>
+    </div>
+</form>
+
+<form class="bench" id="rsa-form" novalidate autocomplete="off" data-mode="encrypt" data-source="text">
+    <h2 class="bench__title"><span class="step">2</span> @T["rsa.bench.title"]</h2>
+    <div class="bench__controls">
+        <fieldset class="segmented">
+            <legend class="sr-only">@T["form.mode"]</legend>
+            <label><input type="radio" name="mode" value="encrypt" checked /><span>@T["form.encrypt"]</span></label>
+            <label><input type="radio" name="mode" value="decrypt" /><span>@T["form.decrypt"]</span></label>
+        </fieldset>
+        <fieldset class="segmented">
+            <legend class="sr-only">@T["form.source"]</legend>
+            <label><input type="radio" name="source" value="text" checked /><span>@T["form.text"]</span></label>
+            <label><input type="radio" name="source" value="file" /><span>@T["form.file"]</span></label>
+        </fieldset>
+    </div>
+
+    <div class="bench__grid">
+        <section class="pane" aria-labelledby="input-title">
+            <h3 class="pane__title" id="input-title">@T["form.input"]</h3>
+
+            <div class="field" data-show-mode="encrypt">
+                <label for="public-input">@T["rsa.publicLabel"]</label>
+                <textarea id="public-input" class="mono-area pem-area" wrap="off" rows="5" spellcheck="false" placeholder="-----BEGIN PUBLIC KEY-----"></textarea>
+                <p class="hint">@T["rsa.publicHint"]</p>
+            </div>
+            <div class="field" data-show-mode="decrypt">
+                <label for="private-input">@T["rsa.privateLabel"]</label>
+                <textarea id="private-input" class="mono-area pem-area" wrap="off" rows="5" spellcheck="false" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+                <p class="hint">@T["rsa.privateHint"]</p>
+            </div>
+
+            <div class="field" data-show-source="text">
+                <label for="text-input">
+                    <span data-show-mode="encrypt">@T["form.textLabel"]</span>
+                    <span data-show-mode="decrypt">@T["form.packageLabel"]</span>
+                </label>
+                <textarea id="text-input" class="mono-area" rows="5" spellcheck="false" maxlength="2000000"></textarea>
+            </div>
+
+            <div class="field" data-show-source="file">
+                <span class="field__label">@T["form.file"]</span>
+                <label class="dropzone" id="dropzone">
+                    <input type="file" class="sr-only" />
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" /></svg>
+                    <span class="dropzone__text">@T["file.choose"]</span>
+                    <span class="dropzone__name" data-file-name></span>
+                    <span class="dropzone__hint">@T["file.limit"]</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn--block" id="run"></button>
+            <p class="status" id="status" role="status" hidden></p>
+        </section>
+
+        <section class="pane pane--output" aria-labelledby="output-title">
+            <h3 class="pane__title" id="output-title">@T["form.output"]</h3>
+
+            <div class="output-empty" id="output-empty">@T["form.outputEmpty"]</div>
+
+            <div id="output" hidden>
+                <div class="field" data-show-source="text">
+                    <label for="text-output">
+                        <span data-show-mode="encrypt">@T["form.packageLabel"]</span>
+                        <span data-show-mode="decrypt">@T["form.plainLabel"]</span>
+                    </label>
+                    <textarea id="text-output" class="mono-area" rows="7" readonly spellcheck="false"></textarea>
+                    <div class="actions">
+                        <button type="button" class="btn btn--ghost" data-copy="#text-output">@T["form.copy"]</button>
+                        <button type="button" class="btn btn--ghost" id="try-decrypt" data-show-mode="encrypt">@T["form.tryDecrypt"]</button>
+                    </div>
+                </div>
+
+                <div class="field" data-show-source="file">
+                    <a class="btn" id="download" href="#" download>@T["form.download"]</a>
+                    <p class="muted small" id="download-name"></p>
+                </div>
+
+                <dl class="package-info">
+                    <div><dt>@T["info.format"]</dt><dd id="info-format"></dd></div>
+                    <div><dt>@T["info.keySize"]</dt><dd id="info-key-size"></dd></div>
+                    <div data-show-mode="encrypt"><dt>@T["info.fingerprint"]</dt><dd id="info-fingerprint"></dd></div>
+                    <div><dt>@T["info.wrappedKey"]</dt><dd id="info-wrapped"></dd></div>
+                    <div><dt>IV</dt><dd id="info-iv"></dd></div>
+                    <div><dt>@T["info.size"]</dt><dd id="info-size"></dd></div>
+                </dl>
+            </div>
+        </section>
+    </div>
+</form>
+
+<details class="how">
+    <summary>@T["how.title"]</summary>
+    <div class="how__body">
+        <ol class="how__steps">
+            <li>@T["rsa.how.1"]</li>
+            <li>@T["rsa.how.2"]</li>
+            <li>@T["rsa.how.3"]</li>
+            <li>@T["rsa.how.4"]</li>
+        </ol>
+
+        <figure class="layout-diagram">
+            <figcaption>@T["encrypt.how.layout"]</figcaption>
+            <div class="layout-diagram__bar">
+                <span class="seg seg--meta">CTH<small>3 B</small></span>
+                <span class="seg seg--meta">v1<small>1 B</small></span>
+                <span class="seg seg--meta">@T["rsa.how.length"]<small>2 B</small></span>
+                <span class="seg seg--salt">@T["info.wrappedKey"]<small>256–512 B</small></span>
+                <span class="seg seg--iv">IV<small>12 B</small></span>
+                <span class="seg seg--data">@T["encrypt.how.ciphertext"]<small>n B</small></span>
+                <span class="seg seg--tag">GCM tag<small>16 B</small></span>
+            </div>
+        </figure>
+
+        <p class="note">@T["rsa.how.warning"]</p>
+    </div>
+</details>
+
+<partial name="_ScriptText" />

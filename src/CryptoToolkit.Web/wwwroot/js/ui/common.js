@@ -63,14 +63,21 @@ export async function readFile(file) {
   return new Uint8Array(await file.arrayBuffer());
 }
 
-// Offers bytes as a download through a temporary blob: URL; nothing is uploaded.
-let lastUrl = null;
+// Offers bytes as a download through a temporary blob: URL; nothing is
+// uploaded. Each link keeps its own URL and frees the previous one.
+const linkUrls = new WeakMap();
 export function downloadLink(link, bytes, fileName, type = "application/octet-stream") {
-  if (lastUrl) URL.revokeObjectURL(lastUrl);
-  lastUrl = URL.createObjectURL(new Blob([bytes], { type }));
-  link.href = lastUrl;
+  if (linkUrls.has(link)) URL.revokeObjectURL(linkUrls.get(link));
+  const url = URL.createObjectURL(new Blob([bytes], { type }));
+  linkUrls.set(link, url);
+  link.href = url;
   link.download = fileName;
 }
+
+// "ab12cd34…" → "AB12 CD34 …": the first 16 bytes of a SHA-256 key
+// fingerprint, grouped so two people can read it to each other.
+export const formatFingerprint = (hex) =>
+  hex.slice(0, 32).toUpperCase().match(/.{4}/g).join(" ");
 
 // Copy buttons: data-copy="#target" copies the target's value or text.
 export function initCopyButtons(root = document) {

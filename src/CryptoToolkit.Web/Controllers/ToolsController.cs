@@ -8,4 +8,7 @@ public class ToolsController : Controller
 {
     [HttpGet("encrypt"), HttpHead("encrypt")]
     public IActionResult Encrypt() => View();
+
+    [HttpGet("rsa"), HttpHead("rsa")]
+    public IActionResult Rsa() => View();
 }
