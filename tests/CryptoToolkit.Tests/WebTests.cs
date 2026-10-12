@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace CryptoToolkit.Tests;
@@ -177,9 +178,77 @@ public class WebTests(AppFactory factory) : IClassFixture<AppFactory>
     }
 }
 
+public class CacheTests(AppFactory factory) : IClassFixture<AppFactory>
+{
+    private static CancellationToken Ct => TestContext.Current.CancellationToken;
+
+    // Modules import each other without a version in the URL; after a deploy
+    // the browser must not mix new and old ones from its cache.
+    [Theory]
+    [InlineData("/js/crypto/password.js")]
+    [InlineData("/js/ui/common.js")]
+    public async Task Unversioned_scripts_are_revalidated(string path)
+    {
+        var response = await factory.Https().GetAsync(path, Ct);
+        Assert.True(response.Headers.CacheControl?.NoCache);
+    }
+
+    [Fact]
+    public async Task Versioned_files_are_cached_for_a_year()
+    {
+        var html = await factory.Https().GetStringAsync("/", Ct);
+        var css = Regex.Match(html, "href=\"(/css/site\\.css\\?v=[^\"]+)\"").Groups[1].Value;
+        var response = await factory.Https().GetAsync(css, Ct);
+        Assert.Equal(TimeSpan.FromDays(365), response.Headers.CacheControl?.MaxAge);
+        Assert.True(response.Headers.CacheControl?.Public);
+    }
+}
+
+public class ClientIpTests
+{
+    private static HttpContext Context(string? header, string remote = "10.0.0.1")
+    {
+        var context = new DefaultHttpContext();
+        context.Connection.RemoteIpAddress = System.Net.IPAddress.Parse(remote);
+        if (header != null) context.Request.Headers[CryptoToolkit.Web.Infrastructure.ClientIp.CloudflareHeader] = header;
+        return context;
+    }
+
+    [Fact]
+    public void Cloudflare_header_wins_over_the_proxy_address() =>
+        Assert.Equal("203.0.113.9", CryptoToolkit.Web.Infrastructure.ClientIp.Of(Context("203.0.113.9")));
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("not-an-ip")]
+    [InlineData("1.2.3.4, 5.6.7.8")]
+    public void Without_a_valid_header_the_connection_address_is_used(string? header) =>
+        Assert.Equal("10.0.0.1", CryptoToolkit.Web.Infrastructure.ClientIp.Of(Context(header)));
+}
+
 // A fresh app so the other tests do not use up the limit.
 public class RateLimitTests
 {
+    // Behind Cloudflare every request comes from some Cloudflare server; the
+    // limit must count per visitor (CF-Connecting-IP), not per proxy.
+    [Fact]
+    public async Task Each_visitor_behind_cloudflare_has_their_own_limit()
+    {
+        using var factory = new AppFactory();
+        var client = factory.Https();
+        var ct = TestContext.Current.CancellationToken;
+        async Task<HttpStatusCode> Get(string ip)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/");
+            request.Headers.Add("CF-Connecting-IP", ip);
+            return (await client.SendAsync(request, ct)).StatusCode;
+        }
+        for (var i = 0; i < 300; i++) Assert.Equal(HttpStatusCode.OK, await Get("198.51.100.1"));
+        Assert.Equal(HttpStatusCode.TooManyRequests, await Get("198.51.100.1"));
+        Assert.Equal(HttpStatusCode.OK, await Get("198.51.100.2"));
+    }
+
     [Fact]
     public async Task Too_many_requests_get_a_friendly_429()
     {

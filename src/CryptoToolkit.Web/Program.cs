@@ -46,7 +46,7 @@ builder.Services.AddRateLimiter(options =>
         || context.Features.Get<IStatusCodeReExecuteFeature>() != null
             ? RateLimitPartition.GetNoLimiter("exempt")
             : RateLimitPartition.GetFixedWindowLimiter(
-                context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                ClientIp.Of(context),
                 _ => new FixedWindowRateLimiterOptions { PermitLimit = 300, Window = TimeSpan.FromMinutes(1) }));
 });
 
@@ -60,6 +60,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 // Behind Render's proxy the public port is always 443.
 builder.Services.AddHttpsRedirection(options => options.HttpsPort = 443);
+builder.Services.AddHsts(options => options.MaxAge = TimeSpan.FromDays(365));
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
@@ -84,6 +85,11 @@ app.UseStaticFiles(new StaticFileOptions
     {
         if (context.Context.Request.Query.ContainsKey("v"))
             context.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+        // Modules imported by other modules have no version in their URL.
+        // The browser must check them on every load, or after a deploy it
+        // could mix a new page script with an old module and break the page.
+        else
+            context.Context.Response.Headers.CacheControl = "no-cache";
     },
 });
 app.UseRequestLocalization();
