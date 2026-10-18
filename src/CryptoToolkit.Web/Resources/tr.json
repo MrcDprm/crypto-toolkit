@@ -1,5 +1,11 @@
 {
-  "meta.description": "Tarayıcıda çalışan kriptografi araçları: parolayla AES-GCM şifreleme, RSA, dijital imza ve özet. Verileriniz cihazınızdan çıkmaz.",
+  "meta.description": "Tarayıcıda çalışan ücretsiz kriptografi araçları: parolayla AES şifreleme, RSA şifreleme, dijital imza ve SHA-256 özet. Verilerin cihazından çıkmaz.",
+  "seo.home.title": "Crypto Toolkit: tarayıcıda AES, RSA, dijital imza ve SHA-256",
+  "seo.encrypt.title": "Parolayla AES şifreleme: metin ve dosya şifrele, online",
+  "seo.rsa.title": "RSA şifreleme online: anahtar çifti üret, şifrele ve çöz",
+  "seo.sign.title": "Dijital imza oluştur ve doğrula (ECDSA), online",
+  "seo.hash.title": "SHA-256 hesaplama ve HMAC: metin ve dosya özeti, online",
+  "seo.local": "Tarayıcıda çalışır; verilerin cihazından çıkmaz.",
   "nav.skip": "İçeriğe geç",
   "nav.main": "Araçlar",
   "nav.language": "Switch to English",

@@ -1,5 +1,11 @@
 {
-  "meta.description": "Cryptography tools that run in your browser: password-based AES-GCM encryption, RSA, digital signatures and hashing. Your data never leaves your device.",
+  "meta.description": "Free cryptography tools that run in your browser: password-based AES encryption, RSA encryption, digital signatures and SHA-256 hashes. Your data never leaves your device.",
+  "seo.home.title": "Crypto Toolkit: AES, RSA, digital signatures and SHA-256 in your browser",
+  "seo.encrypt.title": "AES password encryption online: encrypt text and files",
+  "seo.rsa.title": "RSA encryption online: generate keys, encrypt and decrypt",
+  "seo.sign.title": "Create and verify digital signatures (ECDSA) online",
+  "seo.hash.title": "SHA-256 hash and HMAC generator for text and files",
+  "seo.local": "Runs in your browser; your data never leaves your device.",
   "nav.skip": "Skip to content",
   "nav.main": "Tools",
   "nav.language": "Türkçeye geç",
