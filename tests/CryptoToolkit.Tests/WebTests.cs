@@ -100,7 +100,8 @@ public class WebTests(AppFactory factory) : IClassFixture<AppFactory>
         var html = await _client.GetStringAsync(path, Ct);
         foreach (Match tag in Regex.Matches(html, "<script[^>]*>"))
         {
-            Assert.True(tag.Value.Contains("src=") || tag.Value.Contains("type=\"application/json\""), tag.Value);
+            Assert.True(tag.Value.Contains("src=") || tag.Value.Contains("type=\"application/json\"")
+                        || tag.Value.Contains("type=\"application/ld+json\""), tag.Value);
         }
         Assert.DoesNotMatch(" on(click|load|error|submit)=", html);
         Assert.DoesNotContain(" style=\"", html);
