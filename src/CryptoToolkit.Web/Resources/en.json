@@ -31,6 +31,7 @@
   "home.why.open.title": "Open source",
   "home.why.open.text": "All of the code is on GitHub, and every tool has a \"How it works\" panel that explains each step.",
   "footer.projects": "My projects",
+  "footer.otherProjects": "My other projects",
   "footer.portfolio": "Portfolio",
   "footer.source": "Source code",
   "footer.note": "Started as a project for an Information Security and Cryptography course. For learning purposes; it has not had an independent security audit.",
