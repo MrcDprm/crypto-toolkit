@@ -123,13 +123,6 @@ render.yaml             Render servis tanımı
 - **"Verin burada kalır" sözünü uygulanabilir yapmak.** Sadece söz vermek yerine, İçerik Güvenliği Politikası sayfanın herhangi bir yere bağlanmasını yasaklıyor; Trusted Types da `innerHTML` tarzı enjeksiyonu durduruyor. İkisini de gerçek bir tarayıcıda test ettim.
 - **Kullanıcının gerçekte aldığını test etmek.** NIST ve RFC 4231'in bilinen sonuç testleri, şifreleme ile çözmenin sadece birbirini tutmasını değil, çıktının doğru olduğunu kanıtlıyor. Sunucu testleri gerçek bir hata buldu: istek sınırı aşıldığında hata sayfası da sınırlanıyor ve kullanıcı boş bir sayfa görüyordu.
 
-## Gelecek Planları
-
-- Parola üretici ve daha iyi bir parola gücü tahmini
-- Ed25519 imza ve X25519 anahtar değişimi
-- Parola korumalı özel anahtar dışa aktarma
-- 100 MB'tan büyük dosyalar için akış (streaming) şifreleme
-
 ## Teşekkür
 
 - [Geist ve Geist Mono](https://github.com/vercel/geist-font) fontları, SIL Open Font License ile
