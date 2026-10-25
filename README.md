@@ -123,13 +123,6 @@ Everything before the ciphertext is passed to AES-GCM as additional authenticate
 - **Making "your data stays here" enforceable.** Instead of only promising it, the Content Security Policy forbids the page from connecting anywhere, and Trusted Types stop `innerHTML`-style injection. I tested both in a real browser.
 - **Testing what the user actually gets.** Known-answer tests from NIST and RFC 4231 prove the output is correct, not just that encrypt and decrypt agree. Server tests found a real bug: when the rate limit was hit, the error page was rate-limited too and users saw an empty page.
 
-## Future Plans
-
-- Password generator and a stronger password strength estimate
-- Ed25519 signatures and X25519 key exchange
-- Password-protected private key export
-- Streaming encryption for files larger than 100 MB
-
 ## Credits
 
 - [Geist and Geist Mono](https://github.com/vercel/geist-font) fonts, under the SIL Open Font License
