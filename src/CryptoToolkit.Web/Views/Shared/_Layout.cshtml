@@ -112,15 +112,7 @@
         <div class="container site-footer__inner">
             <p class="badge"><span class="badge__dot" aria-hidden="true"></span>@T["badge.local"]</p>
             <p class="muted small">@T["footer.note"]</p>
-            @* Other projects are listed on the portfolio, so this footer never needs updating. *@
-            <nav class="footer-projects" aria-label="@T["footer.projects"]">
-              <a href="https://www.miracdeprem.com/projects">@T["footer.otherProjects"]</a>
-            </nav>
-            <div class="footer-meta">
-                <span>© 2026 Miraç Deprem</span>
-                <a href="https://www.miracdeprem.com">@T["footer.portfolio"]</a>
-                <a href="https://github.com/MrcDprm/crypto-toolkit">@T["footer.source"]</a>
-            </div>
+            <p class="footer-meta">© @DateTime.UtcNow.Year Miraç Deprem</p>
         </div>
     </footer>
     @await RenderSectionAsync("Scripts", required: false)
